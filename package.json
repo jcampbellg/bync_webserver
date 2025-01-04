@@ -13,6 +13,7 @@
     "knex-rollback": "yarn knex -- migrate:rollback"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.14.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "knex": "^3.1.0",
