@@ -58,6 +58,12 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await uploadFile.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
+    const type = await fileTypeFromBuffer(buffer)
+
+    if (['image/jpeg', 'image/png', 'application/pdf'].indexOf(type?.mime || '') === -1) {
+      return NextResponse.json({ message: 'Invalid file type', file: uploadFile.name, contentType: type?.mime }, { status: 400 })
+    }
+
     // Upload the specified file to the bucket with the given destination name
     const file = bucket.file(uploadFile.name)
 
@@ -65,7 +71,7 @@ export async function POST(request: NextRequest) {
       contentType: uploadFile.type
     })
 
-    return NextResponse.json({ message: 'File uploaded successfully', file: uploadFile.name, contentType: uploadFile.type })
+    return NextResponse.json({ message: 'File uploaded successfully', file: uploadFile.name, contentType: type })
   } catch (error) {
     return NextResponse.json({ message: 'Error uploading file', error }, { status: 500 })
   }
