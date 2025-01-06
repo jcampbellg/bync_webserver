@@ -12,7 +12,7 @@ OPEN_AI_KEY = sk-...
 TOKEN = ...
 PROJECT_ID = my-project-id
 KEYFILENAME = path/to/keyfile.json
-// Place google json service key in one line
+// Place google json service key in one line you can use https://www.text-utils.com/json-formatter/ to format it in one line
 JSON_SERVICE_KEY = 
 BUCKET_NAME = my-bucket-name
 ```

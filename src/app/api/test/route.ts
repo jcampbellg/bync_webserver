@@ -1,23 +1,9 @@
 export const dynamic = 'force-dynamic'
 
-import { Storage } from '@google-cloud/storage'
 import fs from 'fs'
 import { fileTypeFromBuffer } from 'file-type'
 import { NextRequest, NextResponse } from 'next/server'
-
-const projectId = process.env.PROJECT_ID || ''
-const bucketName = process.env.BUCKET_NAME || ''
-
-const serviceKey = JSON.stringify(JSON.parse(process.env.JSON_SERVICE_KEY || ''), null, 2)
-// save service key to file
-fs.writeFileSync('./service-account.json', serviceKey)
-
-const storage = new Storage({
-  projectId,
-  keyFilename: './service-account.json'
-})
-
-const bucket = storage.bucket(bucketName)
+import bucket from '@/utils/bucket'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
