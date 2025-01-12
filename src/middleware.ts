@@ -3,10 +3,10 @@ import type { NextRequest } from 'next/server'
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const key = searchParams.get('key')
-  if (key !== process.env.TOKEN) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+  const auhorization = request.headers.get('Authorization')?.replace('Bearer ', '')
+
+  if (auhorization !== process.env.TOKEN) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 }
 

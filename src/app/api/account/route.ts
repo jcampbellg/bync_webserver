@@ -48,5 +48,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating account' }, { status: 500 })
   }
 
+  if (!!body.currency) {
+    const url = `http://localhost:${process.env.port || 3000}/api/account/${account.id}/balance`
+
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': request.headers.get('Authorization') || ''
+      },
+      body: JSON.stringify(body)
+    })
+  }
+
   return NextResponse.json<Account>(account, { status: 200 })
 }
