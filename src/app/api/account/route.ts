@@ -1,24 +1,15 @@
 export const dynamic = 'force-dynamic'
 import db from '@/utils/db'
-import { Account, AccountWithBalances } from '@/utils/dbTypes'
+import { Account } from '@/utils/dbTypes'
 import { descriptionValidation, notesValidation } from '@/utils/validation'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
-export type GetAccounts = { accounts: AccountWithBalances[] }
 
 export async function GET() {
   const accounts = await db<Account>('accounts').select('*').orderBy('description')
-  const balances = await db('balances').select('*')
 
-  return NextResponse.json<GetAccounts>({
-    accounts: accounts.map((account) => {
-      return {
-        ...account,
-        balances: balances.filter((balance) => balance.accountId === account.id)
-      }
-    })
-  })
+  return NextResponse.json<{ accounts: Account[] }>({ accounts })
 }
 
 export async function POST(request: NextRequest) {
@@ -26,7 +17,9 @@ export async function POST(request: NextRequest) {
 
   const input = z.object({
     description: descriptionValidation,
-    notes: notesValidation
+    notes: notesValidation,
+    startDate: z.number().int().positive().max(31),
+    isDefault: z.boolean().optional(),
   }).safeParse(body)
 
   if (!!input.error) {
@@ -41,11 +34,17 @@ export async function POST(request: NextRequest) {
 
   const account = await db<Account>('accounts').insert({
     description: input.data.description,
-    notes: input.data.notes
+    notes: input.data.notes,
+    startDate: input.data.startDate,
+    isDefault: input.data.isDefault || false
   }).returning('*').then(c => c[0])
 
   if (!account) {
     return NextResponse.json({ message: 'Error creating account' }, { status: 500 })
+  }
+
+  if (!!input.data.isDefault) {
+    await db<Account>('accounts').whereNot('id', account.id).update({ isDefault: false })
   }
 
   if (!!body.currency) {
@@ -61,5 +60,5 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  return NextResponse.json<Account>(account, { status: 200 })
+  return NextResponse.json<{ account: Account }>({ account }, { status: 200 })
 }

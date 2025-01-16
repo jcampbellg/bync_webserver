@@ -2,6 +2,8 @@ export type Account = {
   id: number
   description: string
   notes: string
+  isDefault: boolean
+  startDate: number
   createdAt: string
   updatedAt: string
 }

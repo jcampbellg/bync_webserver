@@ -5,7 +5,8 @@ export async function up(knex: Knex): Promise<void> {
     table.increments('id').primary()
     table.string('description').notNullable()
     table.string('notes').defaultTo('')
-    table.boolean('is_default').defaultTo(false)
+    table.boolean('isDefault').defaultTo(false)
+    table.integer('startDate').notNullable()
     table.timestamps(true, true, true)
   })
 }

@@ -5,7 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, fill in the `.env` file with the following content:
 
 ```
-process.env.TZ = UTC
+TZ = UTC
 NODE_ENV = production
 DATABASE_URL = postgres://...
 OPEN_AI_KEY = sk-...

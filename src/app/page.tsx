@@ -1,9 +1,14 @@
+import dayts from '@/utils/daytz'
+
 export default function Home() {
   return (
-    <div className='font-mono'>
-      <main>
-        OK
-      </main>
-    </div>
+    <main className='font-mono'>
+      <div>
+        Server Time: {dayts().format('LLLL')}
+      </div>
+      <div>
+        Status: OK
+      </div>
+    </main>
   )
 }
