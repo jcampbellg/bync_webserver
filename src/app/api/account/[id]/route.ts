@@ -69,6 +69,12 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 export async function DELETE(request: NextRequest, { params }: Params) {
   const id = parseInt((await params).id)
 
+  const count = await db<Account>('accounts').count().first()
+
+  if (!count || count.count === '1') {
+    return NextResponse.json({ message: 'Can\'t delete all accounts' }, { status: 404 })
+  }
+
   await db<Balance>('balances').delete().where('accountId', id)
   await db<Account>('accounts').delete().where('id', id).returning('*').then(c => c[0])
 

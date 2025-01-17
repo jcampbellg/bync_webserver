@@ -4,7 +4,10 @@ export default function Home() {
   return (
     <main className='font-mono'>
       <div>
-        Server Time: {dayts().format('LLLL')}
+        DayJS: {dayts().format('LLLL')}
+      </div>
+      <div>
+        Date: {new Date().toLocaleString()}
       </div>
       <div>
         Status: OK

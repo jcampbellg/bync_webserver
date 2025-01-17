@@ -45,24 +45,11 @@ export async function POST(request: NextRequest, { params }: Params) {
     return NextResponse.json({ message: 'Error creating balance' }, { status: 500 })
   }
 
-  await db<Balance>('balances').whereNot('id', balance.id).update({ isSelected: false })
+  await db<Balance>('balances').whereNot('id', balance.id).andWhere('accountId', accountId).update({ isSelected: false })
 
   await db<Currency>('currencies').insert({
     symbol: input.data.currency,
   }).onConflict('symbol').merge()
 
   return NextResponse.json<{ balance: Balance }>({ balance }, { status: 200 })
-}
-
-export async function DELETE(request: NextRequest, { params }: Params) {
-  const id = parseInt((await params).id)
-  const body = await request.json().then((data) => data).catch(() => null)
-
-  if (!body.id) {
-    return NextResponse.json({ message: 'Invalid request' }, { status: 400 })
-  }
-
-  await db<Balance>('balances').delete().where('accountId', id).andWhere('id', body.id)
-
-  return NextResponse.json({ message: 'Success' }, { status: 200 })
 }
