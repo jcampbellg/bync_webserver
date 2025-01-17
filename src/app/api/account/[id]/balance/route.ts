@@ -37,12 +37,15 @@ export async function POST(request: NextRequest, { params }: Params) {
     accountId,
     amount: input.data.amount,
     currency: input.data.currency,
+    isSelected: true,
     updatedAt: new Date().toISOString()
   }).onConflict(['accountId', 'currency']).merge().returning('*').then(c => c[0])
 
   if (!balance) {
     return NextResponse.json({ message: 'Error creating balance' }, { status: 500 })
   }
+
+  await db<Balance>('balances').whereNot('id', balance.id).update({ isSelected: false })
 
   await db<Currency>('currencies').insert({
     symbol: input.data.currency,

@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('currency').notNullable()
     table.float('amount').nullable()
     table.unique(['accountId', 'currency'])
+    table.boolean('isSelected').notNullable().defaultTo(false)
     table.timestamps(true, true, true)
   })
 }

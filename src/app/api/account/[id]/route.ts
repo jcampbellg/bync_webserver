@@ -31,7 +31,8 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   const input = z.object({
     description: descriptionValidation.optional(),
     notes: notesValidation.optional(),
-    isDefault: z.boolean().optional(),
+    isSelected: z.boolean().optional(),
+    showBalance: z.boolean().optional()
   }).safeParse(body)
 
   if (!!input.error) {
@@ -46,15 +47,16 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     }
   }
 
-  if (!!input.data.isDefault) {
-    await db<Account>('accounts').whereNot('id', id).update({ isDefault: false })
+  if (!!input.data.isSelected) {
+    await db<Account>('accounts').whereNot('id', id).update({ isSelected: false })
   }
 
   const account = await db<Account>('accounts').update({
     description: input.data.description,
     notes: input.data.notes,
     updatedAt: new Date().toISOString(),
-    isDefault: input.data.isDefault
+    isSelected: input.data.isSelected,
+    showBalance: input.data.showBalance
   }).where('id', id).returning('*').then(c => c[0])
 
   if (!account) {

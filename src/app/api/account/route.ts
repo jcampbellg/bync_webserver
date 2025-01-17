@@ -18,8 +18,6 @@ export async function POST(request: NextRequest) {
   const input = z.object({
     description: descriptionValidation,
     notes: notesValidation,
-    startDate: z.number().int().positive().max(31),
-    isDefault: z.boolean().optional(),
   }).safeParse(body)
 
   if (!!input.error) {
@@ -35,17 +33,14 @@ export async function POST(request: NextRequest) {
   const account = await db<Account>('accounts').insert({
     description: input.data.description,
     notes: input.data.notes,
-    startDate: input.data.startDate,
-    isDefault: input.data.isDefault || false
+    isSelected: true
   }).returning('*').then(c => c[0])
 
   if (!account) {
     return NextResponse.json({ message: 'Error creating account' }, { status: 500 })
   }
 
-  if (!!input.data.isDefault) {
-    await db<Account>('accounts').whereNot('id', account.id).update({ isDefault: false })
-  }
+  await db<Account>('accounts').whereNot('id', account.id).update({ isSelected: false })
 
   if (!!body.currency) {
     const url = `http://localhost:${process.env.port || 3000}/api/account/${account.id}/balance`

@@ -2,8 +2,10 @@ export type Account = {
   id: number
   description: string
   notes: string
-  isDefault: boolean
-  startDate: number
+  isSelected: boolean
+  showBalance: boolean
+  startDate: string | null
+  endDate: string | null
   createdAt: string
   updatedAt: string
 }
@@ -13,6 +15,7 @@ export type Balance = {
   accountId: number
   currency: string
   amount: number
+  isSelected: boolean
   createdAt: string
   updatedAt: string
 }
