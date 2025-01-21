@@ -47,7 +47,8 @@ export async function POST(request: NextRequest, { params }: Params) {
     notes: input.data.notes,
     currency: input.data.currency,
     amount: input.data.amount,
-    paidAt: input.data.paidAt
+    paidAt: input.data.paidAt,
+    accountId: accountId
   }).returning('*').then(t => t[0])
 
   return NextResponse.json<{ transaction: Transaction }>({ transaction }, { status: 200 })

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: Params) {
   const accountId = parseInt((await params).id)
   const transactionId = parseInt((await params).transactionId)
 
-  const transaction = await db<Transaction>('transactions').select('*').where('accountId', accountId).andWhere('id', transactionId)
+  const transaction = await db<Transaction>('transactions').select('*').where('id', transactionId).andWhere('accountId', accountId)
 
   if (transaction.length === 0) {
     return NextResponse.json({ message: 'Transaction not found' }, { status: 404 })
